@@ -126,10 +126,10 @@ pipeline {
 This project uses a Jenkins pipeline to automate the Terraform workflow — from `init` to `plan` to `apply`.
 
 ### 🔄 Full Pipeline Execution
-![Jenkins Pipeline Overview](./images_jankins/jenkins_pipeline.png)
+![Jenkins Pipeline Overview](./Image_jankins/jenkins_pipeline.png)
 
 ### ✅ Terraform Apply Step Output
-![Jenkins Apply Output](.images_jankins/jenkins-dashboard.png)
+![Jenkins Apply Output](.Image_jankins/jenkins-dashboard.png)
 
 
 ## 🌟 Customization Ideas
