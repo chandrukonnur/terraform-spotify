@@ -41,7 +41,10 @@ This project uses **Terraform**, **Spotify API**, **Docker**, and **Jenkins** to
     - **Description:** Create a Spotify playlist using Terraform
 4. Agree to the Terms and click **Create**.
 5. Click **Edit Settings** on your new app.
-6. Add this redirect URI: http://localhost:27228/spotify_callback
+6. Add this redirect URI:
+   ```
+   http://localhost:27228/spotify_callback
+   ```
 7. Click **Save**.
 8. Copy your **Client ID** and click **Show Client Secret**.
 
@@ -51,70 +54,100 @@ This project uses **Terraform**, **Spotify API**, **Docker**, and **Jenkins** to
 
 ```bash
 touch .env
+```
+
+Paste this inside:
+
+```env
 SPOTIFY_CLIENT_ID=your_client_id_here
 SPOTIFY_CLIENT_SECRET=your_client_secret_here
-
-🐳 Step 3: Run Spotify Authorization Proxy Server
-bash
-Copy
-Edit
-export SPOTIFY_CLIENT_REDIRECT_URI=http://localhost:27228/spotify_callback
-docker run --rm -it -p 27228:27228 --env-file ./.env ghcr.io/conradludgate/spotify-auth-proxy
-You will see an Auth: URL in the terminal.
-Open it in a browser → log in with Spotify → wait for "Authorization successful".
-Keep the terminal running.
-
- Step 4: Clone the Terraform Playlist Repo
-bash
-Copy
-Edit
-git clone https://github.com/YOUR_USERNAME/terraform-spotify-playlist
-cd terraform-spotify-playlist
-
-Create a Jenkins pipeline project.
-
-Store your API key as a Secret Text Credential with ID spotify_api_key.
-
-Use the following Jenkinsfile
-
-🌟 Customization Ideas
-Change the artist or song in data "spotify_search_track"
-
-Search by album or name
-
-Add more tracks dynamically
-
-Explore spotify_track data source
-
-🧠 Future Enhancements
-🎤 Accept artist input from Jenkins parameters
-
-🎚️ Add genre filters
-
-🌐 Deploy using GitHub Actions
-
-🧠 AI-based track recommendations
-
-📣 Credits
-Terraform Spotify Provider: conradludgate/spotify
-
-Docker Auth Proxy: ghcr.io/conradludgate/spotify-auth-proxy
-
-HashiCorp Learn Labs
-
-📜 License
-This project is licensed under the MIT License.
-
-yaml
-Copy
-Edit
-
+```
 
 ---
 
-Let me know if you want:
-- A sample `terraform.tfvars.example`
-- Jenkins pipeline with input parameters
-- GitHub Actions version of automation
+## 🐳 Step 3: Run Spotify Authorization Proxy Server
 
-I can also upload this as a downloadable `.md` file again if needed.
+```bash
+export SPOTIFY_CLIENT_REDIRECT_URI=http://localhost:27228/spotify_callback
+
+docker run --rm -it -p 27228:27228 --env-file ./.env ghcr.io/conradludgate/spotify-auth-proxy
+```
+
+You will see an **Auth:** URL in the terminal.  
+Open it in a browser → log in with Spotify → wait for **"Authorization successful"**.  
+Keep the terminal running.
+
+---
+
+## 📥 Step 4: Clone the Terraform Playlist Repo
+
+```bash
+git clone https://github.com/YOUR_USERNAME/terraform-spotify-playlist
+cd terraform-spotify-playlist
+```
+
+---
+
+## 🤖 Step 5: Automate with Jenkins
+
+1. Create a **Jenkins pipeline** project.
+2. Store your API key as a **Secret Text Credential** with ID `spotify_api_key`.
+3. Use the following `Jenkinsfile`:
+
+```groovy
+pipeline {
+  agent any
+  environment {
+    SPOTIFY_API_KEY = credentials('spotify_api_key')
+  }
+  stages {
+    stage('Init') {
+      steps {
+        sh 'terraform init'
+      }
+    }
+    stage('Plan') {
+      steps {
+        sh 'terraform plan -var="spotify_api_key=$SPOTIFY_API_KEY"'
+      }
+    }
+    stage('Apply') {
+      steps {
+        sh 'terraform apply -auto-approve -var="spotify_api_key=$SPOTIFY_API_KEY"'
+      }
+    }
+  }
+}
+```
+
+---
+
+## 🌟 Customization Ideas
+
+- 🎨 Change the artist or song in `data "spotify_search_track"`
+- 💿 Search by album or song name
+- 🔀 Add more tracks dynamically
+- 🔎 Explore [`spotify_track` data source](https://registry.terraform.io/providers/conradludgate/spotify/latest/docs/data-sources/track)
+
+---
+
+## 🧠 Future Enhancements
+
+- 🎤 Accept artist input from Jenkins parameters
+- 🎚️ Add genre filters
+- 🌐 Deploy using GitHub Actions
+- 🧠 AI-based track recommendations
+
+---
+
+## 📣 Credits
+
+- Terraform Spotify Provider: [conradludgate/spotify](https://github.com/conradludgate/terraform-provider-spotify)
+- Docker Auth Proxy: [ghcr.io/conradludgate/spotify-auth-proxy](https://github.com/conradludgate/spotify-auth-proxy)
+- HashiCorp Learn Labs
+
+---
+
+## 📜 License
+
+This project is licensed under the MIT License.
